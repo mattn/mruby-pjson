@@ -137,6 +137,7 @@ module PJSON
         self.skip_white
         c = self.next
         if c == '}'
+          self.next
           break
         end
         if c != '"'
@@ -155,6 +156,7 @@ module PJSON
         self.skip_white
         c = self.current
         if c == '}'
+          self.next
           break
         end
         if c != ','

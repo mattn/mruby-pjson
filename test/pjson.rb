@@ -7,3 +7,9 @@ end
 assert('parse array') do
   PJSON::parse('[true, "foo"]')[1] == "foo"
 end
+assert('complex test obj-ary') do
+  PJSON::parse('{"label":[true, "foo"]}') == {"label"=>[true, "foo"]}
+end
+assert('complex test ary-obj') do
+  PJSON::parse('[true, {"foo" : "bar"}]') == [true, {"foo" => "bar"}]
+end

@@ -186,27 +186,25 @@ module PJSON
       a
     end
     def parse_value
-      while self.has_next?
-        self.skip_white
-        c = self.current
-        case c
-        when '{'
-          return self.parse_object
-        when '['
-          return self.parse_array
-        when '"'
-          return self.parse_string
-        when '0','1','2','3','4','5','6','7','8','9','-'
-          return self.parse_number
-        when 't'
-          return self.parse_constant('true', true)
-        when 'f'
-          return self.parse_constant('false', false)
-        when 'n'
-          return self.parse_constant('null', nil)
-        else
-          error 'Invalid sequence'
-        end
+      self.skip_white
+      c = self.current
+      case c
+      when '{'
+        return self.parse_object
+      when '['
+        return self.parse_array
+      when '"'
+        return self.parse_string
+      when '0','1','2','3','4','5','6','7','8','9','-'
+        return self.parse_number
+      when 't'
+        return self.parse_constant('true', true)
+      when 'f'
+        return self.parse_constant('false', false)
+      when 'n'
+        return self.parse_constant('null', nil)
+      else
+        error 'Invalid sequence'
       end
     end
   end

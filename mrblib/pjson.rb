@@ -27,26 +27,21 @@ module PJSON
     def error(msg)
       raise "#{msg}: #{@buf[@index...-1]}"
     end
-    def parse_constant
+    def parse_constant(expect, value)
       s = ''
       pos = @index
       while self.has_next?
         c = self.next
-        unless 'truefalsenull'.include? c
-          self.back
-          break
+        unless expect.include? c
+          if s == expect
+            self.back
+            return value
+          end
+          @index = pos
+          error 'Unknown token'
         end
         s += c
-        case s
-        when 'true'
-          return true
-        when 'false'
-          return false
-        when 'null'
-          return nil
-        end
       end
-      @index = pos
       error 'Unknown token'
     end
     def parse_number
@@ -158,13 +153,14 @@ module PJSON
         v = self.parse_value
         o[k] = v
         self.skip_white
-        c = self.next
+        c = self.current
         if c == '}'
           break
         end
         if c != ','
           error 'Expected "," or "}" but not found'
         end
+        self.next
       end
       o
     end
@@ -202,8 +198,12 @@ module PJSON
           return self.parse_string
         when '0','1','2','3','4','5','6','7','8','9','-'
           return self.parse_number
-        when 't', 'f', 'n'
-          return self.parse_constant
+        when 't'
+          return self.parse_constant('true', true)
+        when 'f'
+          return self.parse_constant('false', false)
+        when 'n'
+          return self.parse_constant('null', nil)
         else
           error 'Invalid sequence'
         end

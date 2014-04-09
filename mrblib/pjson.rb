@@ -1,12 +1,15 @@
 module PJSON
   class Context
+    WHITE_SPACES = [" ", "\t", "\r", "\n"]
+    NUMBER_LETTERS = '0123456789+-.eE'
+    HEX_LETTERS = '0123456789abcdef'
     def initialize(s)
       @buf = s
       @index = 0
       @length = s.size
     end
     def skip_white
-      while [" ", "\t", "\r", "\n"].include? @buf[@index] do
+      while WHITE_SPACES.include? @buf[@index] do
         @index += 1
       end 
     end
@@ -48,7 +51,7 @@ module PJSON
       s = self.next
       while self.has_next?
         c = self.next
-        unless '0123456789+-.eE'.include? c
+        unless NUMBER_LETTERS.include? c
           self.back
           break
         end
@@ -84,7 +87,7 @@ module PJSON
             u = 0
             while self.has_next?
               c = self.next
-              i = '0123456789abcdef'.index(c.downcase)
+              i = HEX_LETTERS.index(c.downcase)
               if i == nil
                 self.back
                 break
